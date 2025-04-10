@@ -29,16 +29,5 @@ if(ENABLE_IPO)
   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
-option(ENABLE_PCH "Enable Precompiled Headers" OFF)
-if(ENABLE_PCH)
-  target_precompile_headers(
-    project_options
-    INTERFACE
-    <vector>  # Insert preferred headers
-    <string>
-    <map>
-    <utility>)
-endif()
-
 add_subdirectory(modm)
 add_subdirectory(app)
