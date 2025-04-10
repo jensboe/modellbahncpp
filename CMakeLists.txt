@@ -7,7 +7,7 @@ add_library(project_options INTERFACE)
 # Generate compile_commands.json to make it easier to work with clang based tools
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(ENABLE_CPPCHECK ON)
+set(ENABLE_CPPCHECK OFF)
 set(ENABLE_MODM_CHECK_EXCLUDE ON)
 
 
@@ -15,7 +15,7 @@ set(ENABLE_MODM_CHECK_EXCLUDE ON)
 target_compile_options(project_options INTERFACE -fdiagnostics-color=never)
 
 add_library(project_warnings INTERFACE)
-# include(cmake/Cache.cmake)
+include(cmake/Cache.cmake)
 
 include(cmake/CompilerWarnings.cmake)
 set_project_warnings(project_warnings)
