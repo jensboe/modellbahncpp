@@ -1,2 +1,5 @@
 build
 *.log
+
+# Ignore python cache files
+__pycache__/
