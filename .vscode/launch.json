@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug current CmakeTarget",
+            "cwd": "${workspaceFolder}",
+            "executable": "${command:cmake.launchTargetPath}",
+            "request": "launch",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none",
+            "servertype": "openocd",
+            "device": "STM32F446ZET6",
+            "configFiles": [
+                "modm/openocd.cfg",
+            ],
+        }
+    ]
+}
