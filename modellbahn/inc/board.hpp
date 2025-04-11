@@ -137,7 +137,7 @@ namespace Board
 		using Uart = BufferedUart<UsartHal3, UartTxBuffer<2048>>;
 	}
 
-	using LoggerDevice = modm::IODeviceWrapper<modm::platform::Itm, modm::IOBuffer::DiscardIfFull>;
+	using LoggerDevice = modm::IODeviceWrapper<modm::platform::Itm, modm::IOBuffer::BlockIfFull>;
 
 	inline void initialize()
 	{

@@ -8,6 +8,7 @@ add_executable(${CMAKE_PROJECT_NAME}
 target_include_directories(${CMAKE_PROJECT_NAME}
     PRIVATE
     inc
+    .
 )
 
 
