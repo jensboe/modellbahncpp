@@ -1,13 +1,13 @@
 
 add_executable(${CMAKE_PROJECT_NAME}
     src/main.cpp
-    board/board.cpp
+    src/board.cpp
 )
 
 
 target_include_directories(${CMAKE_PROJECT_NAME}
     PRIVATE
-    board
+    inc
 )
 
 
