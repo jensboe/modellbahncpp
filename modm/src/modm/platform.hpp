@@ -28,6 +28,7 @@
 #include "platform/gpio/software_port.hpp"
 #include "platform/gpio/static.hpp"
 #include "platform/gpio/unused.hpp"
+#include "platform/itm/itm.hpp"
 #include "platform/uart/uart.hpp"
 #include "platform/uart/uart_base.hpp"
 #include "platform/uart/uart_buffer.hpp"

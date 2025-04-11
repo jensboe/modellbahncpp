@@ -38,6 +38,7 @@ add_library(modm OBJECT
   src/modm/platform/core/startup_platform.c
   src/modm/platform/core/vectors.c
   src/modm/platform/gpio/enable.cpp
+  src/modm/platform/itm/itm.cpp
   src/modm/platform/uart/uart_3.cpp
 )
 set_source_files_properties(

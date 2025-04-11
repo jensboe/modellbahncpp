@@ -10,10 +10,23 @@
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none",
             "servertype": "openocd",
-            "device": "STM32F446ZET6",
+            "device": "STM32F446ZE",
             "configFiles": [
                 "modm/openocd.cfg",
             ],
+            "swoConfig": {
+                "enabled": true,
+                "cpuFrequency": 180000000,
+                "swoFrequency": 2000000,
+                "source": "probe",
+                "decoders": [
+                    {
+                        "type": "console",
+                        "label": "Print",
+                        "port": 0,
+                    },
+                ]
+            }
         }
     ]
 }
