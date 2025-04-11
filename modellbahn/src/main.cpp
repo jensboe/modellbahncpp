@@ -3,16 +3,20 @@
 int main()
 {
     Board::initialize();
-    Board::Leds::setOutput();
 
+    Board::Adapter_A::LedRed::set(true);
+    modm::delay(10ms);
+    Board::Adapter_A::LedRed::set(false);
+    Board::Adapter_A::LedYellow::set(true);
+    modm::delay(10ms);
+    Board::Adapter_A::LedYellow::set(false);
+    Board::Adapter_A::LedGreen::set(true);
     while (true)
     {
-        Board::Leds::toggle();
-        modm::delay(Board::Button::read() ? 250ms : 500ms);
-#ifdef MODM_BOARD_HAS_LOGGER
+        Board::Nucleo::LedBlue::toggle();
+        modm::delay(50ms);
         static uint32_t counter(0);
         MODM_LOG_INFO << "Loop counter: " << (counter++) << modm::endl;
-#endif
     }
     return 0;
 }

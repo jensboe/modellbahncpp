@@ -1,24 +1,8 @@
-/*
- * Copyright (c) 2016-2017, Sascha Schade
- * Copyright (c) 2016-2018, Niklas Hauser
- * Copyright (c) 2021, Christopher Durand
- *
- * This file is part of the modm project.
- *
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
-// ----------------------------------------------------------------------------
-
-#ifndef MODM_STM32_NUCLEO_F446ZE_HPP
-#define MODM_STM32_NUCLEO_F446ZE_HPP
+#pragma once
 
 #include <modm/platform.hpp>
 #include <modm/architecture/interface/clock.hpp>
 #include <modm/debug/logger.hpp>
-/// @ingroup modm_board_nucleo_f446ze
-#define MODM_BOARD_HAS_LOGGER
 
 using namespace modm::platform;
 using namespace modm::literals;
@@ -26,8 +10,6 @@ using namespace std::chrono_literals;
 
 namespace Board
 {
-	/// @ingroup modm_board_nucleo_f446ze
-	/// @{
 	using namespace modm::literals;
 
 	/// STM32F446 running at 180 MHz from external 8 MHz STLink clock
@@ -105,25 +87,30 @@ namespace Board
 			// APB1 has max. 45MHz
 			Rcc::setApb1Prescaler(Rcc::Apb1Prescaler::Div4);
 			Rcc::setApb2Prescaler(Rcc::Apb2Prescaler::Div2);
-			// update frequencies for busy-wait delay functions
 			Rcc::updateCoreFrequency<Frequency>();
 
 			return true;
 		}
 	};
+	namespace Nucleo
+	{
+		using Button = GpioInputC13;
 
-	using Button = GpioInputC13;
-
-	using LedGreen = GpioOutputB0; // LED1 [Green]
-	using LedBlue = GpioOutputB7;  // LED2 [Blue]
-	using LedRed = GpioOutputB14;  // LED3 [Red]
-	using Leds = SoftwareGpioPort<LedRed, LedBlue, LedGreen>;
-	/// @}
+		using LedGreen = GpioOutputB0; // LED1 [Green]
+		using LedBlue = GpioOutputB7;  // LED2 [Blue]
+		using LedRed = GpioOutputB14;  // LED3 [Red]
+		using Leds = SoftwareGpioPort<LedRed, LedBlue, LedGreen>;
+	};
+	namespace Adapter_A
+	{
+		using LedRed = GpioOutputC9;
+		using LedYellow = GpioOutputG2;
+		using LedGreen = GpioOutputG3;
+		using SignalLeds = SoftwareGpioPort<LedRed, LedYellow, LedGreen>;
+	};
 
 	namespace usb
 	{
-		/// @ingroup modm_board_nucleo_f446ze
-		/// @{
 		using Vbus = GpioA9;
 		using Id = GpioA10;
 		using Dm = GpioA11;
@@ -133,25 +120,18 @@ namespace Board
 		using Power = GpioOutputG6;		 // OTG_FS_PowerSwitchOn
 
 		using Device = UsbFs;
-		/// @}
 	}
 
 	namespace stlink
 	{
-		/// @ingroup modm_board_nucleo_f446ze
-		/// @{
 		using Tx = GpioOutputD8;
 		using Rx = GpioInputD9;
 		using Uart = BufferedUart<UsartHal3, UartTxBuffer<2048>>;
-		/// @}
 	}
 
-	/// @ingroup modm_board_nucleo_f446ze
-	/// @{
 	using LoggerDevice = modm::IODeviceWrapper<modm::platform::Itm, modm::IOBuffer::DiscardIfFull>;
 
-	inline void
-	initialize()
+	inline void initialize()
 	{
 		SystemClock::enable();
 		SysTickTimer::initialize<SystemClock>();
@@ -159,15 +139,17 @@ namespace Board
 		stlink::Uart::connect<stlink::Tx::Tx, stlink::Rx::Rx>();
 		stlink::Uart::initialize<SystemClock, 115200_Bd>();
 
-		LedGreen::setOutput(modm::Gpio::Low);
-		LedBlue::setOutput(modm::Gpio::Low);
-		LedRed::setOutput(modm::Gpio::Low);
+		Nucleo::LedGreen::setOutput(modm::Gpio::Low);
+		Nucleo::LedBlue::setOutput(modm::Gpio::Low);
+		Nucleo::LedRed::setOutput(modm::Gpio::Low);
 
-		Button::setInput();
+		Nucleo::Button::setInput();
+		Adapter_A::LedRed::setOutput(modm::Gpio::Low);
+		Adapter_A::LedYellow::setOutput(modm::Gpio::Low);
+		Adapter_A::LedGreen::setOutput(modm::Gpio::Low);
 	}
 
-	inline void
-	initializeUsbFs(uint8_t priority = 3)
+	inline void initializeUsbFs(uint8_t priority = 3)
 	{
 		usb::Device::initialize<SystemClock>(priority);
 		usb::Device::connect<usb::Dm::Dm, usb::Dp::Dp, usb::Id::Id>();
@@ -180,8 +162,4 @@ namespace Board
 		// Enable VBUS sense (B device) via pin PA9
 		USB_OTG_FS->GCCFG |= USB_OTG_GCCFG_VBDEN;
 	}
-	/// @}
-
 }
-
-#endif // MODM_STM32_NUCLEO_F446ZE_HPP
