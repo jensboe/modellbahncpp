@@ -108,6 +108,14 @@ namespace Board
 		using LedGreen = GpioOutputG3;
 		using SignalLeds = SoftwareGpioPort<LedRed, LedYellow, LedGreen>;
 	};
+	namespace ExpantionBoard
+	{
+		using SpiMaster = SpiMaster3;
+		using Cs = GpioD2;
+		using Sck = GpioC10;
+		using Mosi = GpioC12;
+		using Miso = GpioC11;
+	};
 
 	namespace usb
 	{
@@ -147,6 +155,11 @@ namespace Board
 		Adapter_A::LedRed::setOutput(modm::Gpio::Low);
 		Adapter_A::LedYellow::setOutput(modm::Gpio::Low);
 		Adapter_A::LedGreen::setOutput(modm::Gpio::Low);
+
+		ExpantionBoard::SpiMaster::initialize<Board::SystemClock, 175_kHz>();
+		ExpantionBoard::SpiMaster::setDataMode(ExpantionBoard::SpiMaster::DataMode::Mode0);
+		ExpantionBoard::SpiMaster::connect<ExpantionBoard::Sck::Sck, ExpantionBoard::Mosi::Mosi, ExpantionBoard::Miso::Miso>();
+		ExpantionBoard::Cs::setOutput(Gpio::OutputType::PushPull);
 	}
 
 	inline void initializeUsbFs(uint8_t priority = 3)
