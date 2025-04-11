@@ -11,9 +11,6 @@ set(ENABLE_CPPCHECK OFF)
 set(ENABLE_MODM_CHECK_EXCLUDE ON)
 
 
-# Colors is unsupported vscode, can also be turend off in cmake/StandardProjectSettings.cmake
-target_compile_options(project_options INTERFACE -fdiagnostics-color=never)
-
 add_library(project_warnings INTERFACE)
 include(cmake/Cache.cmake)
 

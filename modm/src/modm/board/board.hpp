@@ -151,6 +151,11 @@ namespace Board
 	/// @{
 	using LoggerDevice = modm::IODeviceWrapper<modm::platform::Itm, modm::IOBuffer::DiscardIfFull>;
 
+	using Cs = GpioA4;
+	using Mosi = GpioB5;
+	using Sck = GpioB3;
+	using Spi = SpiMaster3<>;
+
 	inline void
 	initialize()
 	{

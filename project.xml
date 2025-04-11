@@ -12,5 +12,6 @@
   <modules>
     <module>modm:build:cmake</module>
     <module>modm:platform:itm</module>
+    <module>modm:platform:spi:3</module>
   </modules>
 </library>
