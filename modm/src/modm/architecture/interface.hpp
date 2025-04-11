@@ -24,6 +24,7 @@
 #include "interface/fiber.hpp"
 #include "interface/gpio.hpp"
 #include "interface/interrupt.hpp"
+#include "interface/memory.hpp"
 #include "interface/register.hpp"
 #include "interface/spi.hpp"
 #include "interface/spi_lock.hpp"

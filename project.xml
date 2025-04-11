@@ -23,5 +23,6 @@
     <module>modm:platform:uart:3</module>
     <module>modm:platform:usb:fs</module>
     <module>modm:platform:spi:3</module>
+    <module>modm:platform:heap</module>
   </modules>
 </library>

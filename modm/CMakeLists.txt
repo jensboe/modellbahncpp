@@ -31,12 +31,13 @@ add_library(modm OBJECT
   src/modm/platform/core/assert.cpp
   src/modm/platform/core/delay.cpp
   src/modm/platform/core/delay_ns.cpp
-  src/modm/platform/core/no_heap.c
+  src/modm/platform/core/heap_table.cpp
   src/modm/platform/core/reset_handler.sx
   src/modm/platform/core/startup.c
   src/modm/platform/core/startup_platform.c
   src/modm/platform/core/vectors.c
   src/modm/platform/gpio/enable.cpp
+  src/modm/platform/heap/heap_newlib.cpp
   src/modm/platform/itm/itm.cpp
   src/modm/platform/spi/spi_master_3.cpp
   src/modm/platform/uart/uart_3.cpp

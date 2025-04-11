@@ -93,8 +93,6 @@ SECTIONS
 		*(.ARM.extab* .gnu.linkonce.armextab.*)
 		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
 		*(.eh_frame*)
-		/* Catch use of dynamic memory without `modm:platform:heap` module. */
-		*(.Heap_is_not_implemented!__Please_include_the__modm:platform:heap__module_in_your_project!)
 	}
 
 
