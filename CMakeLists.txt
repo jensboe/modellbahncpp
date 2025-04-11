@@ -4,7 +4,6 @@ include(cmake/ToolChain.cmake)
 project(modelbahn CXX C)
 add_library(project_options INTERFACE)
 
-# Generate compile_commands.json to make it easier to work with clang based tools
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(ENABLE_CPPCHECK OFF)
@@ -27,4 +26,4 @@ if(ENABLE_IPO)
 endif()
 
 add_subdirectory(modm)
-add_subdirectory(app)
+add_subdirectory(modellbahn)
