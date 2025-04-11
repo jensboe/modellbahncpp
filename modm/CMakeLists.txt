@@ -22,7 +22,6 @@ add_library(modm OBJECT
   ext/gcc/new_delete.cpp
   ext/printf/printf.c
   src/modm/architecture/driver/atomic/flag.cpp
-  src/modm/board/board.cpp
   src/modm/io/iostream.cpp
   src/modm/io/iostream_printf.cpp
   src/modm/math/utils/bit_operation.cpp

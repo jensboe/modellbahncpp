@@ -21,6 +21,8 @@
 #define MODM_BOARD_HAS_LOGGER
 
 using namespace modm::platform;
+using namespace modm::literals;
+using namespace std::chrono_literals;
 
 namespace Board
 {
@@ -110,9 +112,6 @@ namespace Board
 		}
 	};
 
-// Arduino Footprint
-#include "nucleo144_arduino.hpp"
-
 	using Button = GpioInputC13;
 
 	using LedGreen = GpioOutputB0; // LED1 [Green]
@@ -150,7 +149,6 @@ namespace Board
 	/// @ingroup modm_board_nucleo_f446ze
 	/// @{
 	using LoggerDevice = modm::IODeviceWrapper<modm::platform::Itm, modm::IOBuffer::DiscardIfFull>;
-
 
 	inline void
 	initialize()

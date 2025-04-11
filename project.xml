@@ -4,14 +4,24 @@
       <path>ext/modm/repo.lb</path>
     </repository>
   </repositories>
-  <extends>modm:nucleo-f446ze</extends>
   <options>
     <option name="modm:build:project.name">modellbahn</option>
+    <option name="modm:target">stm32f446zet6</option>
     <option name="modm:platform:itm:buffer.tx">80</option>
   </options>
+  <collectors>
+    <collect name="modm:build:openocd.source">board/st_nucleo_f4.cfg</collect>
+  </collectors>
   <modules>
     <module>modm:build:cmake</module>
     <module>modm:platform:itm</module>
+    <module>modm:debug</module>
+    <module>modm:architecture:clock</module>
+    <module>modm:platform:core</module>
+    <module>modm:platform:gpio</module>
+    <module>modm:platform:clock</module>
+    <module>modm:platform:uart:3</module>
+    <module>modm:platform:usb:fs</module>
     <module>modm:platform:spi:3</module>
   </modules>
 </library>
