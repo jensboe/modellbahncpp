@@ -58,7 +58,7 @@ modm::Fiber simulation(
                 auto select = possible_ways[0];
                 if (possible_ways[1] != trackid::INVALID)
                 {
-                    MODM_LOG_INFO << "Select: " << static_cast<int>(select) << "\tPossible: " << static_cast<int>(possible_ways[1]) << modm::endl;
+                    // MODM_LOG_INFO << "Select: " << static_cast<int>(select) << "\tPossible: " << static_cast<int>(possible_ways[1]) << modm::endl;
                     if (Board::Nucleo::Button::read())
                     {
                         select = possible_ways[1];
@@ -72,9 +72,9 @@ modm::Fiber simulation(
 
             auto next_track = tracks[static_cast<int>(next_id)];
 
-            // MODM_LOG_INFO << "Current: " << static_cast<int>(current_track->id)
-            //               << "\tNext:  " << static_cast<int>(next_track->id)
-            //               << "\tLast:  " << static_cast<int>(last_track->id) << modm::endl;
+            MODM_LOG_INFO << "Current: " << static_cast<int>(current_track->id)
+                          << "\tNext:  " << static_cast<int>(next_track->id)
+                          << "\tLast:  " << static_cast<int>(last_track->id) << modm::endl;
 
             last_track = current_track;
             current_track = next_track;
@@ -108,7 +108,6 @@ modm::Fiber simulation(
 // simulation psim('2');
 int main()
 {
-    /// @brief Initializes the board hardware.
     Board::initialize();
 
     Board::Adapter_A::LedRed::set(true);
