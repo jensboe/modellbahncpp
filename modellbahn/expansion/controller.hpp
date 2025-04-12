@@ -1,7 +1,6 @@
 #pragma once
 #include <cstdint>
-#include <modm/processing/rtos.hpp>
-
+#include <modm/processing.hpp>
 
 struct ioposition
 {
@@ -55,12 +54,12 @@ static constexpr size_t calculate_buffer_offset(size_t board_index)
     return offset;
 }
 template <typename CS, typename SpiMaster, int SleepTime>
-class controller : modm::rtos::Thread
+class controller : public modm::Fiber<>
 {
-    char c;
-
 public:
-    controller(char c) : Thread(2, 1 << 10), c(c) {}
+    controller() : Fiber([this]
+                         { this->update(); }) {};
+
     static constexpr size_t buffer_size = calculate_buffer_size();
 
     std::array<uint8_t, buffer_size> out_buffer = {0};
@@ -93,16 +92,14 @@ public:
         }
     }
 
-    void run()
+    void update()
     {
         while (true)
         {
-            sleep(SleepTime * MILLISECONDS);
-            
             CS::reset();
             SpiMaster::transferBlocking(out_buffer.data(), nullptr, buffer_size);
             CS::set();
-
+            modm::this_fiber::sleep_for(2ms);
         }
     }
 };

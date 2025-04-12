@@ -3,7 +3,8 @@
 #include "track/straight.hpp"
 #include "track/switch.hpp"
 #include "expansion/controller.hpp"
-#include <modm/processing/rtos.hpp>
+#include <modm/processing.hpp>
+
 /// @brief Array of tracks in the system.
 static const auto tracks = std::to_array<std::shared_ptr<track>>({
     std::make_shared<switch_track>(trackid::A_d, ioposition(0, 1), trackid::A_c, trackid::A_3a, trackid::D_1a, ioposition(1, 3), ioposition(1, 4)),
@@ -32,15 +33,10 @@ static const auto tracks = std::to_array<std::shared_ptr<track>>({
     std::make_shared<straight>(trackid::D_1a, ioposition(0, 0), trackid::C_c, trackid::A_d),
 });
 
-controller<Board::ExpantionBoard::Cs, Board::ExpantionBoard::SpiMaster, 2> expand_control('2');
+controller<Board::ExpantionBoard::Cs, Board::ExpantionBoard::SpiMaster, 2> expand_control;
 
-class simulation : modm::rtos::Thread
-{
-    char c;
-
-public:
-    simulation(char c) : Thread(2, 1 << 10), c(c) {}
-    void run()
+modm::Fiber simulation(
+    []
     {
         /// @brief Pointer to the last track in the sequence.
         auto last_track = tracks[static_cast<int>(trackid::A_1a)];
@@ -105,11 +101,11 @@ public:
                 }
             }
             Board::Nucleo::LedBlue::toggle();
-            sleep(100 * MILLISECONDS);
+            modm::this_fiber::sleep_for(100ms);
         }
-    };
-};
-simulation psim('2');
+    });
+
+// simulation psim('2');
 int main()
 {
     /// @brief Initializes the board hardware.
@@ -123,6 +119,6 @@ int main()
     Board::Adapter_A::LedYellow::set(false);
     Board::Adapter_A::LedGreen::set(true);
 
-    modm::rtos::Scheduler::schedule();
+    modm::fiber::Scheduler::run();
     return 0;
 }

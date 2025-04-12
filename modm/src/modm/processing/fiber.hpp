@@ -10,5 +10,5 @@
 // ----------------------------------------------------------------------------
 
 #include <modm/architecture/interface/fiber.hpp>
-// polyfill implementation of an empty yield
-#include "fiber/no_yield.hpp"
+// pulls in the fiber and scheduler implementation
+#include "fiber/task.hpp"

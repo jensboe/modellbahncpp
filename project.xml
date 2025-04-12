@@ -25,6 +25,6 @@
     <module>modm:platform:spi:3</module>
     <module>modm:platform:dma</module>
     <module>modm:platform:heap</module>
-    <module>modm:processing:rtos</module>
+    <module>modm:processing:fiber</module>
   </modules>
 </library>

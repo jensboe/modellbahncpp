@@ -16,15 +16,6 @@ set_source_files_properties(
 )
 
 add_library(modm OBJECT
-  ext/freertos/croutine.c
-  ext/freertos/event_groups.c
-  ext/freertos/list.c
-  ext/freertos/modm_port.cpp
-  ext/freertos/port.c
-  ext/freertos/queue.c
-  ext/freertos/stream_buffer.c
-  ext/freertos/tasks.c
-  ext/freertos/timers.c
   ext/gcc/atomic.cpp
   ext/gcc/cabi.c
   ext/gcc/cxxabi.cpp
@@ -51,10 +42,8 @@ add_library(modm OBJECT
   src/modm/platform/itm/itm.cpp
   src/modm/platform/spi/spi_master_3.cpp
   src/modm/platform/uart/uart_3.cpp
-  src/modm/processing/rtos/mutex.cpp
-  src/modm/processing/rtos/queue.cpp
-  src/modm/processing/rtos/semaphore.cpp
-  src/modm/processing/rtos/thread.cpp
+  src/modm/processing/fiber/context_arm_m.cpp
+  src/modm/processing/fiber/scheduler.cpp
 )
 set_source_files_properties(
   ext/printf/printf.c
@@ -82,8 +71,6 @@ target_include_directories(modm SYSTEM
   ext
   ext/cmsis/core
   ext/cmsis/device
-  ext/freertos/inc
-  ext/freertos/inc/freertos
   ext/gcc
   src
   PRIVATE

@@ -40,6 +40,5 @@
 #include "platform/uart/uart.hpp"
 #include "platform/uart/uart_base.hpp"
 #include "platform/uart/uart_buffer.hpp"
-#include "platform/uart/uart_buffer_freertos.hpp"
 #include "platform/uart/uart_hal_3.hpp"
 #include "platform/usb/usb_fs.hpp"
