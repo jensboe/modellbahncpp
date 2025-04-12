@@ -156,7 +156,7 @@ namespace Board
 		Adapter_A::LedYellow::setOutput(modm::Gpio::Low);
 		Adapter_A::LedGreen::setOutput(modm::Gpio::Low);
 
-		ExpantionBoard::SpiMaster::initialize<Board::SystemClock, 175_kHz>();
+		ExpantionBoard::SpiMaster::initialize<Board::SystemClock, 5'625_kHz>();
 		ExpantionBoard::SpiMaster::setDataMode(ExpantionBoard::SpiMaster::DataMode::Mode0);
 		ExpantionBoard::SpiMaster::connect<ExpantionBoard::Sck::Sck, ExpantionBoard::Mosi::Mosi, ExpantionBoard::Miso::Miso>();
 		ExpantionBoard::Cs::setOutput(Gpio::OutputType::PushPull);
