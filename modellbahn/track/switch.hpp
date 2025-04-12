@@ -35,7 +35,7 @@ struct switch_track : public track
                 return track_common;
             }
         }
-        return -1;
+        return 10000;
     }
 
 private:

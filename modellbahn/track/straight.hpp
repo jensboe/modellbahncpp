@@ -18,7 +18,7 @@ struct straight : public track
             return track_a;
         }
         
-        return -1;
+        return 10000;
     }
 
 private:

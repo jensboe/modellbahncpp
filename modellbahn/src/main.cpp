@@ -16,7 +16,7 @@ int main()
     Board::Adapter_A::LedGreen::set(true);
 
     static const std::array<std::shared_ptr<track>, 11> tracks = {
-        std::make_shared<straight>(0, "Track  1", 200, tracks.size()-1, 1),
+        std::make_shared<straight>(0, "Track  1", 200, tracks.size() - 1, 1),
         std::make_shared<straight>(1, "Track  2", 200, 0, 2),
         std::make_shared<straight>(2, "Track  3", 200, 1, 3),
         std::make_shared<straight>(3, "Track  4", 200, 2, 4),
@@ -39,8 +39,13 @@ int main()
     {
         Board::Nucleo::LedBlue::toggle();
         modm::delay(50ms);
-
-        auto next_track = tracks[current_track->next_track(last_track->power_id)];
+        auto next_id = current_track->next_track(last_track->power_id);
+        if (next_id == 10000 or next_id >= tracks.size())
+        {
+            MODM_LOG_ERROR << "Invalid track ID: " << current_track->power_id << " from: " << last_track->power_id << modm::endl;
+            break;
+        }
+        auto next_track = tracks[next_id];
 
         MODM_LOG_INFO << "Current: " << current_track->name << "\tNext: " << next_track->name << "\tLast: " << last_track->name << modm::endl;
 
@@ -68,5 +73,8 @@ int main()
         Board::ExpantionBoard::SpiMaster::transferBlocking(track_mapping.data(), readin.data(), track_mapping.size());
         Board::ExpantionBoard::Cs::set(true);
     }
+    MODM_LOG_ERROR << "Abandoning...\n"
+                   << modm::flush;
+                   while(true) {}
     return 0;
 }
