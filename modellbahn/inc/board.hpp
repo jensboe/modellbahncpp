@@ -110,7 +110,9 @@ namespace Board
 	};
 	namespace ExpantionBoard
 	{
-		using SpiMaster = SpiMaster3;
+		using DmaRx = Dma1::Channel0;
+		using DmaTx = Dma1::Channel7;
+		using SpiMaster = SpiMaster3_Dma<DmaRx, DmaTx>;
 		using Cs = GpioD2;
 		using Sck = GpioC10;
 		using Mosi = GpioC12;
@@ -155,7 +157,7 @@ namespace Board
 		Adapter_A::LedRed::setOutput(modm::Gpio::Low);
 		Adapter_A::LedYellow::setOutput(modm::Gpio::Low);
 		Adapter_A::LedGreen::setOutput(modm::Gpio::Low);
-
+		Dma1::enable();
 		ExpantionBoard::SpiMaster::initialize<Board::SystemClock, 5'625_kHz>();
 		ExpantionBoard::SpiMaster::setDataMode(ExpantionBoard::SpiMaster::DataMode::Mode0);
 		ExpantionBoard::SpiMaster::connect<ExpantionBoard::Sck::Sck, ExpantionBoard::Mosi::Mosi, ExpantionBoard::Miso::Miso>();

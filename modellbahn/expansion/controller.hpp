@@ -89,7 +89,7 @@ struct controller
     void update()
     {
         Board::ExpantionBoard::Cs::set(false);
-        Board::ExpantionBoard::SpiMaster::transferBlocking(out_buffer.data(), in_buffer.data(), buffer_size);
+        Board::ExpantionBoard::SpiMaster::transferBlocking(out_buffer.data(), nullptr, buffer_size);
         Board::ExpantionBoard::Cs::set(true);
     }
 };

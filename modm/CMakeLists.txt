@@ -36,6 +36,7 @@ add_library(modm OBJECT
   src/modm/platform/core/startup.c
   src/modm/platform/core/startup_platform.c
   src/modm/platform/core/vectors.c
+  src/modm/platform/dma/dma.cpp
   src/modm/platform/gpio/enable.cpp
   src/modm/platform/heap/heap_newlib.cpp
   src/modm/platform/itm/itm.cpp

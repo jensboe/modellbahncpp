@@ -13,7 +13,7 @@ static const auto tracks = std::to_array<std::shared_ptr<track>>({
     std::make_shared<switch_track>(trackid::A_a, ioposition(0, 5), trackid::A_1b, trackid::A_b, trackid::B_1a, ioposition(1, 7), ioposition(2, 0)),
     std::make_shared<straight>(trackid::A_2a, ioposition(0, 6), trackid::A_c, trackid::A_2b),
     std::make_shared<straight>(trackid::A_2b, ioposition(0, 7), trackid::A_2a, trackid::A_b),
-    std::make_shared<switch_track>(trackid::A_b, ioposition(1, 0), trackid::A_3b, trackid::A_2b, trackid::A_a, ioposition(2, 1), ioposition(2, 1)),
+    std::make_shared<switch_track>(trackid::A_b, ioposition(1, 0), trackid::A_3b, trackid::A_2b, trackid::A_a, ioposition(2, 1), ioposition(2, 2)),
     std::make_shared<straight>(trackid::A_3a, ioposition(1, 1), trackid::A_d, trackid::A_3b),
     std::make_shared<straight>(trackid::A_3b, ioposition(1, 2), trackid::A_3a, trackid::A_b),
 
@@ -29,7 +29,7 @@ static const auto tracks = std::to_array<std::shared_ptr<track>>({
     std::make_shared<straight>(trackid::C_3b, ioposition(5, 0), trackid::C_3a, trackid::C_3c),
     std::make_shared<straight>(trackid::C_3c, ioposition(5, 1), trackid::C_3b, trackid::C_c),
 
-    std::make_shared<straight>(trackid::D_1a, ioposition(6, 0), trackid::C_c, trackid::A_d),
+    std::make_shared<straight>(trackid::D_1a, ioposition(0, 0), trackid::C_c, trackid::A_d),
 });
 
 /// @brief Entry point of the program.
@@ -69,9 +69,6 @@ int main()
             if (possible_ways[1] != trackid::INVALID)
             {
                 MODM_LOG_INFO << "Select: " << static_cast<int>(select) << "\tPossible: " << static_cast<int>(possible_ways[1]) << modm::endl;
-                Board::Nucleo::LedRed::set(true);
-                modm::delay(100ms);
-                Board::Nucleo::LedRed::set(false);
                 if (Board::Nucleo::Button::read())
                 {
                     select = possible_ways[1];
@@ -85,9 +82,9 @@ int main()
 
         auto next_track = tracks[static_cast<int>(next_id)];
 
-        MODM_LOG_INFO << "Current: " << static_cast<int>(current_track->id)
-                      << "\tNext:  " << static_cast<int>(next_track->id)
-                      << "\tLast:  " << static_cast<int>(last_track->id) << modm::endl;
+        // MODM_LOG_INFO << "Current: " << static_cast<int>(current_track->id)
+        //               << "\tNext:  " << static_cast<int>(next_track->id)
+        //               << "\tLast:  " << static_cast<int>(last_track->id) << modm::endl;
 
         last_track = current_track;
         current_track = next_track;
@@ -115,7 +112,7 @@ int main()
         }
         controller.update();
         Board::Nucleo::LedBlue::toggle();
-        modm::delay(5ms);
+        modm::delay(100ms);
     }
     MODM_LOG_ERROR << "Abandoning...\n"
                    << modm::flush;
