@@ -38,12 +38,28 @@ int main()
     while (true)
     {
         /// @brief Determines the next track based on the current and last tracks.
-        auto next_id = current_track->next_track(last_track->id);
-        if (next_id < 0 || next_id >= static_cast<int>(tracks.size()))
+        auto possible_ways = current_track->next_tracks(last_track->id);
+        if (possible_ways[0] < 0 || possible_ways[0] >= static_cast<int>(tracks.size()))
         {
             MODM_LOG_ERROR << "Next track not found " << current_track->name << " comming from  " << last_track->name << modm::endl;
             break;
         }
+        else
+        {
+            auto select = possible_ways[0];
+            if (possible_ways[1] != -1)
+            {
+                if (Board::Nucleo::Button::read())
+                {
+                    select = possible_ways[1];
+                }
+            }
+
+            current_track->make_way_to(select, last_track->id);
+        }
+
+        auto next_id = current_track->next_track(last_track->id);
+
         auto next_track = tracks[next_id];
 
         MODM_LOG_INFO << "Current: " << current_track->name << "\tNext: " << next_track->name << "\tLast: " << last_track->name << modm::endl;
@@ -57,6 +73,20 @@ int main()
         for (const auto &track : tracks)
         {
             controller.set_buffer(track->power_pos, track->powerstate == power::ON);
+            if (track->type() == track_type::Switch)
+            {
+                auto handle_switch = static_cast<switch_track *>(track.get());
+                if (handle_switch->state == switch_state::STRAIGHT)
+                {
+                    controller.set_buffer(handle_switch->straight, true);
+                    controller.set_buffer(handle_switch->curved, false);
+                }
+                else if (handle_switch->state == switch_state::CURVED)
+                {
+                    controller.set_buffer(handle_switch->straight, false);
+                    controller.set_buffer(handle_switch->curved, true);
+                }
+            }
         }
         controller.update();
         Board::Nucleo::LedBlue::toggle();

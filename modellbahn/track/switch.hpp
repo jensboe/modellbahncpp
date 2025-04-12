@@ -43,7 +43,10 @@ struct switch_track : public track
           track_common(track_common),
           straight(straight),
           curved(curved) {}
-
+    virtual track_type type() const override
+    {
+        return track_type::Switch;
+    }
     /// @brief Determines the next track based on the current state and the previous track.
     /// @param previous The ID of the previous track.
     /// @return The ID of the next track.
@@ -64,7 +67,7 @@ struct switch_track : public track
         {
             return track_common;
         }
-        return track_a;
+        return -1;
     }
 
     /// @brief Provides a list of possible next tracks based on the current state.

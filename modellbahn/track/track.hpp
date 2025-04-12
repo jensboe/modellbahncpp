@@ -7,6 +7,12 @@ enum class power
     OFF,
     ON,
 };
+enum class track_type
+{
+    Straight,
+    Switch,
+    Unknown
+};
 
 /// @brief Base class for all track types.
 /// @details Provides a common interface for different types of tracks.
@@ -45,6 +51,8 @@ struct track
 
     /// @brief Virtual destructor for the track class.
     virtual ~track() = default;
+
+    virtual track_type type() const = 0;
 
     /// @brief Determines the next track based on the previous track.
     /// @param previous The ID of the previous track.

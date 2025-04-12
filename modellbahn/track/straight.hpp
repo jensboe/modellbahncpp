@@ -39,6 +39,10 @@ struct straight : public track
 
         return -1;
     }
+    virtual track_type type() const override
+    {
+        return track_type::Straight;
+    }
 
     /// @brief Provides a list of possible next tracks.
     /// @param previous The ID of the previous track.
