@@ -136,7 +136,7 @@ modm::Fiber measurement(
             uint32_t *data = sensors::getData();
 
             MODM_LOG_INFO << "current=" << data[0];
-            MODM_LOG_INFO << "\tvoltagey=" << data[1];;
+            MODM_LOG_INFO << "\tvoltage=" << data[1];
             MODM_LOG_INFO << "\ttemperature=" << data[2] << modm::endl;
             modm::this_fiber::sleep_for(100ms);
         }
