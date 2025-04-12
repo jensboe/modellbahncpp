@@ -26,7 +26,7 @@ class Itm : public ::modm::Uart
 {
 public:
 	static constexpr size_t RxBufferSize = 0;
-	static constexpr size_t TxBufferSize = 80;
+	static constexpr size_t TxBufferSize = 1;
 
 public:
 	static void

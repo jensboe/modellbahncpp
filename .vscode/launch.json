@@ -11,6 +11,7 @@
             "showDevDebugOutput": "none",
             "servertype": "openocd",
             "device": "STM32F446ZE",
+            "rtos": "FreeRTOS",
             "configFiles": [
                 "modm/openocd.cfg",
             ],
@@ -37,6 +38,7 @@
             "showDevDebugOutput": "none",
             "servertype": "openocd",
             "device": "STM32F446ZE",
+            "rtos": "FreeRTOS",
             "configFiles": [
                 "modm/openocd.cfg",
             ],

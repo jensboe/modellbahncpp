@@ -16,5 +16,6 @@
 
 #include "processing/fiber.hpp"
 #include "processing/resumable.hpp"
+#include "processing/rtos.hpp"
 #include "processing/task.hpp"
 #endif	// MODM_PROCESSING_HPP

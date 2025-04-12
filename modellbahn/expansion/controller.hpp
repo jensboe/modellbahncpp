@@ -1,5 +1,7 @@
 #pragma once
 #include <cstdint>
+#include <modm/processing/rtos.hpp>
+
 
 struct ioposition
 {
@@ -52,9 +54,13 @@ static constexpr size_t calculate_buffer_offset(size_t board_index)
     }
     return offset;
 }
-
-struct controller
+template <typename CS, typename SpiMaster, int SleepTime>
+class controller : modm::rtos::Thread
 {
+    char c;
+
+public:
+    controller(char c) : Thread(2, 1 << 10), c(c) {}
     static constexpr size_t buffer_size = calculate_buffer_size();
 
     std::array<uint8_t, buffer_size> out_buffer = {0};
@@ -86,10 +92,17 @@ struct controller
             MODM_LOG_ERROR << "Invalid board position: " << pos.board << modm::endl;
         }
     }
-    void update()
+
+    void run()
     {
-        Board::ExpantionBoard::Cs::set(false);
-        Board::ExpantionBoard::SpiMaster::transferBlocking(out_buffer.data(), nullptr, buffer_size);
-        Board::ExpantionBoard::Cs::set(true);
+        while (true)
+        {
+            sleep(SleepTime * MILLISECONDS);
+            
+            CS::reset();
+            SpiMaster::transferBlocking(out_buffer.data(), nullptr, buffer_size);
+            CS::set();
+
+        }
     }
 };

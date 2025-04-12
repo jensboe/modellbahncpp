@@ -3,7 +3,7 @@
 #include "track/straight.hpp"
 #include "track/switch.hpp"
 #include "expansion/controller.hpp"
-
+#include <modm/processing/rtos.hpp>
 /// @brief Array of tracks in the system.
 static const auto tracks = std::to_array<std::shared_ptr<track>>({
     std::make_shared<switch_track>(trackid::A_d, ioposition(0, 1), trackid::A_c, trackid::A_3a, trackid::D_1a, ioposition(1, 3), ioposition(1, 4)),
@@ -32,92 +32,97 @@ static const auto tracks = std::to_array<std::shared_ptr<track>>({
     std::make_shared<straight>(trackid::D_1a, ioposition(0, 0), trackid::C_c, trackid::A_d),
 });
 
-/// @brief Entry point of the program.
-/// @details Initializes the board and controls the track system in a loop.
+controller<Board::ExpantionBoard::Cs, Board::ExpantionBoard::SpiMaster, 2> expand_control('2');
+
+class simulation : modm::rtos::Thread
+{
+    char c;
+
+public:
+    simulation(char c) : Thread(2, 1 << 10), c(c) {}
+    void run()
+    {
+        /// @brief Pointer to the last track in the sequence.
+        auto last_track = tracks[static_cast<int>(trackid::A_1a)];
+
+        /// @brief Pointer to the current track in the sequence.
+        auto current_track = tracks[static_cast<int>(trackid::A_1b)];
+
+        while (true)
+        {
+            /// @brief Determines the next track based on the current and last tracks.
+            auto possible_ways = current_track->next_tracks(last_track->id);
+            if (possible_ways[0] == trackid::INVALID)
+            {
+                MODM_LOG_ERROR << "Next track not found " << static_cast<int>(current_track->id) << " comming from " << static_cast<int>(last_track->id) << modm::endl;
+                break;
+            }
+            else
+            {
+                auto select = possible_ways[0];
+                if (possible_ways[1] != trackid::INVALID)
+                {
+                    MODM_LOG_INFO << "Select: " << static_cast<int>(select) << "\tPossible: " << static_cast<int>(possible_ways[1]) << modm::endl;
+                    if (Board::Nucleo::Button::read())
+                    {
+                        select = possible_ways[1];
+                    }
+                }
+
+                current_track->make_way_to(select, last_track->id);
+            }
+
+            auto next_id = current_track->next_track(last_track->id);
+
+            auto next_track = tracks[static_cast<int>(next_id)];
+
+            // MODM_LOG_INFO << "Current: " << static_cast<int>(current_track->id)
+            //               << "\tNext:  " << static_cast<int>(next_track->id)
+            //               << "\tLast:  " << static_cast<int>(last_track->id) << modm::endl;
+
+            last_track = current_track;
+            current_track = next_track;
+            last_track->powerstate = power::OFF;
+            current_track->powerstate = power::ON;
+
+            /// @brief Updates the power state of the tracks.
+            for (const auto &track : tracks)
+            {
+                expand_control.set_buffer(track->power_pos, track->powerstate == power::ON);
+                if (track->type() == track_type::Switch)
+                {
+                    auto handle_switch = static_cast<switch_track *>(track.get());
+                    if (handle_switch->state == switch_state::STRAIGHT)
+                    {
+                        expand_control.set_buffer(handle_switch->straight, true);
+                        expand_control.set_buffer(handle_switch->curved, false);
+                    }
+                    else if (handle_switch->state == switch_state::CURVED)
+                    {
+                        expand_control.set_buffer(handle_switch->straight, false);
+                        expand_control.set_buffer(handle_switch->curved, true);
+                    }
+                }
+            }
+            Board::Nucleo::LedBlue::toggle();
+            sleep(100 * MILLISECONDS);
+        }
+    };
+};
+simulation psim('2');
 int main()
 {
     /// @brief Initializes the board hardware.
     Board::initialize();
-    controller controller;
 
     Board::Adapter_A::LedRed::set(true);
-    modm::delay(100ms);
+    modm::delay(500ms);
     Board::Adapter_A::LedRed::set(false);
     Board::Adapter_A::LedYellow::set(true);
-    modm::delay(10ms);
+    modm::delay(200ms);
     Board::Adapter_A::LedYellow::set(false);
     Board::Adapter_A::LedGreen::set(true);
 
-    /// @brief Pointer to the last track in the sequence.
-    auto last_track = tracks[static_cast<int>(trackid::A_1a)];
-
-    /// @brief Pointer to the current track in the sequence.
-    auto current_track = tracks[static_cast<int>(trackid::A_1b)];
-
-    while (true)
-    {
-        /// @brief Determines the next track based on the current and last tracks.
-        auto possible_ways = current_track->next_tracks(last_track->id);
-        if (possible_ways[0] == trackid::INVALID)
-        {
-            MODM_LOG_ERROR << "Next track not found " << static_cast<int>(current_track->id) << " comming from " << static_cast<int>(last_track->id) << modm::endl;
-            break;
-        }
-        else
-        {
-            auto select = possible_ways[0];
-            if (possible_ways[1] != trackid::INVALID)
-            {
-                MODM_LOG_INFO << "Select: " << static_cast<int>(select) << "\tPossible: " << static_cast<int>(possible_ways[1]) << modm::endl;
-                if (Board::Nucleo::Button::read())
-                {
-                    select = possible_ways[1];
-                }
-            }
-
-            current_track->make_way_to(select, last_track->id);
-        }
-
-        auto next_id = current_track->next_track(last_track->id);
-
-        auto next_track = tracks[static_cast<int>(next_id)];
-
-        // MODM_LOG_INFO << "Current: " << static_cast<int>(current_track->id)
-        //               << "\tNext:  " << static_cast<int>(next_track->id)
-        //               << "\tLast:  " << static_cast<int>(last_track->id) << modm::endl;
-
-        last_track = current_track;
-        current_track = next_track;
-        last_track->powerstate = power::OFF;
-        current_track->powerstate = power::ON;
-
-        /// @brief Updates the power state of the tracks.
-        for (const auto &track : tracks)
-        {
-            controller.set_buffer(track->power_pos, track->powerstate == power::ON);
-            if (track->type() == track_type::Switch)
-            {
-                auto handle_switch = static_cast<switch_track *>(track.get());
-                if (handle_switch->state == switch_state::STRAIGHT)
-                {
-                    controller.set_buffer(handle_switch->straight, true);
-                    controller.set_buffer(handle_switch->curved, false);
-                }
-                else if (handle_switch->state == switch_state::CURVED)
-                {
-                    controller.set_buffer(handle_switch->straight, false);
-                    controller.set_buffer(handle_switch->curved, true);
-                }
-            }
-        }
-        controller.update();
-        Board::Nucleo::LedBlue::toggle();
-        modm::delay(100ms);
-    }
-    MODM_LOG_ERROR << "Abandoning...\n"
-                   << modm::flush;
-    while (true)
-    {
-    }
+    modm::rtos::Scheduler::schedule();
     return 0;
 }

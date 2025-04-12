@@ -16,7 +16,7 @@
 
 namespace
 {
-	static modm::atomic::Queue<uint8_t, 80> txBuffer;
+	static modm::atomic::Queue<uint8_t, 1> txBuffer;
 }
 namespace modm::platform
 {
