@@ -1,6 +1,32 @@
 #pragma once
 #include <cstddef>
 #include "expansion/controller.hpp"
+enum class trackid
+{
+    INVALID = -1,
+    A_d,
+    A_c,
+    A_1a,
+    A_1b,
+    A_a,
+    A_2a,
+    A_2b,
+    A_b,
+    A_3a,
+    A_3b,
+    B_1a,
+    C_a,
+    C_1a,
+    C_1b,
+    C_2a,
+    C_2b,
+    C_b,
+    C_c,
+    C_3a,
+    C_3b,
+    C_3c,
+    D_1a,
+};
 
 enum class power
 {
@@ -19,13 +45,8 @@ enum class track_type
 struct track
 {
     /// @brief The unique identifier of the track.
-    const int id;
+    const trackid id;
 
-    /// @brief The name of the track.
-    const char *name;
-
-    /// @brief The length of the track.
-    const size_t length;
 
     /// @brief The power position of the track.
     const ioposition power_pos;
@@ -35,17 +56,12 @@ struct track
 
     /// @brief Constructs a track object.
     /// @param id The unique identifier of the track.
-    /// @param name The name of the track.
     /// @param power_pos The power position of the track.
     /// @param length The length of the track.
     track(
-        int id,
-        const char *name,
-        const ioposition &power_pos,
-        size_t length)
+        trackid id,
+        const ioposition &power_pos)
         : id(id),
-          name(name),
-          length(length),
           power_pos(power_pos),
           powerstate(power::OFF) {}
 
@@ -57,16 +73,16 @@ struct track
     /// @brief Determines the next track based on the previous track.
     /// @param previous The ID of the previous track.
     /// @return The ID of the next track.
-    virtual int next_track(const int previous) const = 0;
+    virtual trackid next_track(const trackid previous) const = 0;
 
     /// @brief Provides a list of possible next tracks.
     /// @param previous The ID of the previous track.
     /// @return An array of up to three possible next track IDs.
-    virtual std::array<int, 3> next_tracks(const int previous) const = 0;
+    virtual std::array<trackid, 3> next_tracks(const trackid previous) const = 0;
 
     /// @brief Sets the state of the track to create a path between two tracks.
     /// @param to The ID of the destination track.
     /// @param from The ID of the source track.
     /// @return True if the state was successfully set, false otherwise.
-    virtual bool make_way_to([[maybe_unused]] const int to, [[maybe_unused]] const int from) { return true; };
+    virtual bool make_way_to([[maybe_unused]] const trackid to, [[maybe_unused]] const trackid from) { return true; };
 };

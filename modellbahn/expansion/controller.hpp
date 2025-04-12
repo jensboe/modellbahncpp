@@ -19,10 +19,16 @@ static constexpr board board_a = {
     .inputs = 0,
     .outputs = 1,
 };
-static constexpr std::array<board, 2> boards = {
+static constexpr std::array<board, 7> boards = {
+    board_a,
+    board_a,
+    board_a,
+    board_a,
+    board_a,
     board_a,
     board_a,
 };
+
 static constexpr size_t calculate_buffer_size()
 {
     size_t size = 0;
