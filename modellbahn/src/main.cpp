@@ -39,10 +39,10 @@ int main()
     {
         Board::Nucleo::LedBlue::toggle();
         modm::delay(50ms);
-        auto next_id = current_track->next_track(last_track->power_id);
-        if (next_id == 10000 or next_id >= tracks.size())
+        auto next_id = current_track->next_track(last_track->id);
+        if (next_id < 0 || next_id >= static_cast<int>(tracks.size()))
         {
-            MODM_LOG_ERROR << "Invalid track ID: " << current_track->power_id << " from: " << last_track->power_id << modm::endl;
+            MODM_LOG_ERROR << "Invalid track ID: " << current_track->id << " from: " << last_track->id << modm::endl;
             break;
         }
         auto next_track = tracks[next_id];
@@ -62,11 +62,11 @@ int main()
             //               << modm::endl;
             if (track->powerstate == power::ON)
             {
-                track_mapping[track->power_id / 8] |= static_cast<uint8_t>(1 << (track->power_id % 8));
+                track_mapping[track->id / 8] |= static_cast<uint8_t>(1 << (track->id % 8));
             }
             else
             {
-                track_mapping[track->power_id / 8] &= static_cast<uint8_t>(~(1 << (track->power_id % 8)));
+                track_mapping[track->id / 8] &= static_cast<uint8_t>(~(1 << (track->id % 8)));
             }
         }
         Board::ExpantionBoard::Cs::set(false);
@@ -75,6 +75,8 @@ int main()
     }
     MODM_LOG_ERROR << "Abandoning...\n"
                    << modm::flush;
-                   while(true) {}
+    while (true)
+    {
+    }
     return 0;
 }

@@ -4,10 +4,10 @@
 
 struct straight : public track
 {
-    straight(size_t power_id, const char *name, size_t length, const size_t track_a, const size_t track_b)
-        : track(power_id, name, length), track_a(track_a), track_b(track_b) {}
+    straight(int id, const char *name, size_t length, const int track_a, const int track_b)
+        : track(id, name, length), track_a(track_a), track_b(track_b) {}
 
-    virtual size_t next_track(const size_t previous) const override
+    virtual int next_track(const int previous) const override
     {
         if (previous == track_a)
         {
@@ -17,11 +17,11 @@ struct straight : public track
         {
             return track_a;
         }
-        
-        return 10000;
+
+        return -1;
     }
 
 private:
-    const size_t track_a;
-    const size_t track_b;
+    const int track_a;
+    const int track_b;
 };
