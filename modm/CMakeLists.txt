@@ -26,6 +26,8 @@ add_library(modm OBJECT
   src/modm/io/iostream_printf.cpp
   src/modm/math/utils/bit_operation.cpp
   src/modm/math/utils/pc/operator.cpp
+  src/modm/platform/adc/adc_interrupt_1.cpp
+  src/modm/platform/adc/adc_shared_interrupts.cpp
   src/modm/platform/clock/rcc.cpp
   src/modm/platform/clock/systick_timer.cpp
   src/modm/platform/core/assert.cpp

@@ -17,6 +17,8 @@
 #include "interface/accessor.hpp"
 #include "interface/accessor_flash.hpp"
 #include "interface/accessor_ram.hpp"
+#include "interface/adc.hpp"
+#include "interface/adc_interrupt.hpp"
 #include "interface/assert.hpp"
 #include "interface/atomic_lock.hpp"
 #include "interface/clock.hpp"

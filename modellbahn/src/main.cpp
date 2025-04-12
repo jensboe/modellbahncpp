@@ -4,6 +4,7 @@
 #include "track/switch.hpp"
 #include "expansion/controller.hpp"
 #include <modm/processing.hpp>
+#include <modm/driver/adc/adc_sampler.hpp>
 
 /// @brief Array of tracks in the system.
 static const auto tracks = std::to_array<std::shared_ptr<track>>({
@@ -104,8 +105,42 @@ modm::Fiber simulation(
             modm::this_fiber::sleep_for(100ms);
         }
     });
+modm::Fiber measurement(
+    []
+    {
+        typedef GpioInputA3 AdcCurrent;
+        typedef GpioInputC0 AdcVoltage;
+        // AdcVoltage::In10
+        // AdcCurrent::In3
+        Adc1::Channel sensorMapping[3] = {
+            Adc1::getPinChannel<AdcCurrent>(),
+            Adc1::getPinChannel<AdcVoltage>(),
+            Adc1::Channel::TemperatureSensor,
+        };
+        uint32_t sensorData[3];
 
-// simulation psim('2');
+        typedef modm::AdcSampler<AdcInterrupt1, 3, 100> sensors;
+
+        Adc1::connect<AdcCurrent::In3, AdcVoltage::In10>();
+        Adc1::initialize<Board::SystemClock, 11'250_kHz>();
+
+        Adc1::enableInterruptVector(5);
+        Adc1::enableInterrupt(Adc1::Interrupt::EndOfRegularConversion);
+
+        sensors::initialize(sensorMapping, sensorData);
+
+        while (true)
+        {
+            sensors::startReadout();
+            modm::this_fiber::poll(sensors::isReadoutFinished);
+            uint32_t *data = sensors::getData();
+
+            MODM_LOG_INFO << "current=" << data[0];
+            MODM_LOG_INFO << "\tvoltagey=" << data[1];;
+            MODM_LOG_INFO << "\ttemperature=" << data[2] << modm::endl;
+            modm::this_fiber::sleep_for(100ms);
+        }
+    });
 int main()
 {
     Board::initialize();

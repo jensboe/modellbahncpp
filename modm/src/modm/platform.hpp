@@ -12,6 +12,8 @@
 
 #include <modm/architecture.hpp>
 
+#include "platform/adc/adc_1.hpp"
+#include "platform/adc/adc_interrupt_1.hpp"
 #include "platform/clock/rcc.hpp"
 #include "platform/clock/systick_timer.hpp"
 #include "platform/core/delay_ns.hpp"
