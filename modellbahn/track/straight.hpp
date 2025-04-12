@@ -4,8 +4,8 @@
 
 struct straight : public track
 {
-    straight(int id, const char *name, size_t length, const int track_a, const int track_b)
-        : track(id, name, length), track_a(track_a), track_b(track_b) {}
+    straight(int id, const char *name, const ioposition power_pos, size_t length, const int track_a, const int track_b)
+        : track(id, name, power_pos, length), track_a(track_a), track_b(track_b) {}
 
     virtual int next_track(const int previous) const override
     {

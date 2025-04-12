@@ -12,8 +12,8 @@ enum class switch_state
 struct switch_track : public track
 {
     switch_state state;
-    switch_track(int id, const char *name, size_t length, const int track_a, const int track_b, const int track_common)
-        : track(id, name, length), state(switch_state::UNKNOWN), track_a(track_a), track_b(track_b), track_common(track_common) {}
+    switch_track(int id, const char *name, const ioposition power_pos, size_t length, const int track_a, const int track_b, const int track_common)
+        : track(id, name, power_pos, length), state(switch_state::UNKNOWN), track_a(track_a), track_b(track_b), track_common(track_common) {}
 
     virtual int next_track(const int previous) const override
     {
