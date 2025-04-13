@@ -7,26 +7,7 @@
 modm::Fiber measurement(
     []
     {
-        typedef GpioInputA3 AdcCurrent;
-        typedef GpioInputC0 AdcVoltage;
-        // AdcVoltage::In10
-        // AdcCurrent::In3
-        Adc1::Channel sensorMapping[3] = {
-            Adc1::getPinChannel<AdcCurrent>(),
-            Adc1::getPinChannel<AdcVoltage>(),
-            Adc1::Channel::TemperatureSensor,
-        };
-        uint32_t sensorData[3];
-
-        typedef modm::AdcSampler<AdcInterrupt1, 3, 100> sensors;
-
-        Adc1::connect<AdcCurrent::In3, AdcVoltage::In10>();
-        Adc1::initialize<Board::SystemClock, 11'250_kHz>();
-
-        Adc1::enableInterruptVector(5);
-        Adc1::enableInterrupt(Adc1::Interrupt::EndOfRegularConversion);
-
-        sensors::initialize(sensorMapping, sensorData);
+        using sensors = Board::Adapter_A::sensors;
 
         while (true)
         {

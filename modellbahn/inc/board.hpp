@@ -3,6 +3,7 @@
 #include <modm/platform.hpp>
 #include <modm/architecture/interface/clock.hpp>
 #include <modm/debug/logger.hpp>
+#include <modm/driver/adc/adc_sampler.hpp>
 
 using namespace modm::platform;
 using namespace modm::literals;
@@ -100,15 +101,50 @@ namespace Board
 		using LedBlue = GpioOutputB7;  // LED2 [Blue]
 		using LedRed = GpioOutputB14;  // LED3 [Red]
 		using Leds = SoftwareGpioPort<LedRed, LedBlue, LedGreen>;
+		inline void initialize()
+		{
+			LedGreen::setOutput(modm::Gpio::Low);
+			LedBlue::setOutput(modm::Gpio::Low);
+			LedRed::setOutput(modm::Gpio::Low);
+			Button::setInput();
+		}
 	};
+
 	namespace Adapter_A
 	{
 		using LedRed = GpioOutputC9;
 		using LedYellow = GpioOutputG2;
 		using LedGreen = GpioOutputG3;
 		using SignalLeds = SoftwareGpioPort<LedRed, LedYellow, LedGreen>;
+
+		using AdcCurrent = GpioInputA3;
+		using AdcVoltage = GpioInputC0;
+		using Adc = Adc1;
+		using sensors = modm::AdcSampler<AdcInterrupt1, 3, 100>;
+
+		inline void initialize()
+		{
+			LedRed::setOutput(modm::Gpio::Low);
+			LedYellow::setOutput(modm::Gpio::Low);
+			LedGreen::setOutput(modm::Gpio::Low);
+
+			// Adc
+			Adc::Channel sensorMapping[3] = {
+				Adc::getPinChannel<AdcCurrent>(),
+				Adc::getPinChannel<AdcVoltage>(),
+				Adc::Channel::TemperatureSensor,
+			};
+			uint32_t sensorData[3];
+			Adc1::connect<AdcCurrent::In3, AdcVoltage::In10>();
+			Adc1::initialize<Board::SystemClock, 11'250_kHz>();
+
+			Adc1::enableInterruptVector(5);
+			Adc1::enableInterrupt(Adc1::Interrupt::EndOfRegularConversion);
+
+			sensors::initialize(sensorMapping, sensorData);
+		}
 	};
-	
+
 	namespace ExpantionBoard
 	{
 		using DmaRx = Dma1::Channel0;
@@ -118,6 +154,14 @@ namespace Board
 		using Sck = GpioC10;
 		using Mosi = GpioC12;
 		using Miso = GpioC11;
+		inline void initialize()
+		{
+			Dma1::enable();
+			SpiMaster::initialize<Board::SystemClock, 5'625_kHz>();
+			SpiMaster::setDataMode(ExpantionBoard::SpiMaster::DataMode::Mode0);
+			SpiMaster::connect<ExpantionBoard::Sck::Sck, ExpantionBoard::Mosi::Mosi, ExpantionBoard::Miso::Miso>();
+			Cs::setOutput(Gpio::OutputType::PushPull);
+		}
 	};
 
 	namespace usb
@@ -150,19 +194,9 @@ namespace Board
 		stlink::Uart::connect<stlink::Tx::Tx, stlink::Rx::Rx>();
 		stlink::Uart::initialize<SystemClock, 115200_Bd>();
 
-		Nucleo::LedGreen::setOutput(modm::Gpio::Low);
-		Nucleo::LedBlue::setOutput(modm::Gpio::Low);
-		Nucleo::LedRed::setOutput(modm::Gpio::Low);
-
-		Nucleo::Button::setInput();
-		Adapter_A::LedRed::setOutput(modm::Gpio::Low);
-		Adapter_A::LedYellow::setOutput(modm::Gpio::Low);
-		Adapter_A::LedGreen::setOutput(modm::Gpio::Low);
-		Dma1::enable();
-		ExpantionBoard::SpiMaster::initialize<Board::SystemClock, 5'625_kHz>();
-		ExpantionBoard::SpiMaster::setDataMode(ExpantionBoard::SpiMaster::DataMode::Mode0);
-		ExpantionBoard::SpiMaster::connect<ExpantionBoard::Sck::Sck, ExpantionBoard::Mosi::Mosi, ExpantionBoard::Miso::Miso>();
-		ExpantionBoard::Cs::setOutput(Gpio::OutputType::PushPull);
+		Adapter_A::initialize();
+		Nucleo::initialize();
+		ExpantionBoard::initialize();
 	}
 
 	inline void initializeUsbFs(uint8_t priority = 3)
