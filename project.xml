@@ -24,6 +24,7 @@
     <module>modm:platform:usb:fs</module>
     <module>modm:platform:spi:3</module>
     <module>modm:platform:adc:1</module>
+    <module>modm:platform:timer:1</module>
     <module>modm:platform:dma</module>
     <module>modm:platform:heap</module>
     <module>modm:processing:fiber</module>

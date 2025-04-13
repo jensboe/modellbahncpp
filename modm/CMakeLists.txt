@@ -43,6 +43,7 @@ add_library(modm OBJECT
   src/modm/platform/heap/heap_newlib.cpp
   src/modm/platform/itm/itm.cpp
   src/modm/platform/spi/spi_master_3.cpp
+  src/modm/platform/timer/timer_1.cpp
   src/modm/platform/uart/uart_3.cpp
   src/modm/processing/fiber/context_arm_m.cpp
   src/modm/processing/fiber/scheduler.cpp

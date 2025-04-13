@@ -21,6 +21,46 @@ modm::Fiber measurement(
             modm::this_fiber::sleep_for(100ms);
         }
     });
+modm::Fiber driver_fiber(
+    []
+    {
+        namespace L6226 = Board::Adapter_A::L6226;
+        using Timer = L6226::Timer;
+        using In1 = L6226::In1::Ch3;
+        using In2 = L6226::In2::Ch1;
+
+        auto const maxvalue = Timer::getOverflow();
+        Timer::configureOutputChannel<In1>(Timer::OutputCompareMode::Pwm, 0);
+        Timer::configureOutputChannel<In2>(Timer::OutputCompareMode::Pwm, 0);
+        Timer::start();
+        Timer::enableOutput();
+
+        L6226::En::set();
+        auto steper = 0;
+        while (true)
+        {
+            if (steper > 0)
+            {
+                Timer::configureOutputChannel<In1>(Timer::OutputCompareMode::Pwm, maxvalue / 2);
+                Timer::configureOutputChannel<In2>(Timer::OutputCompareMode::Pwm, 0);
+            }
+            else
+            {
+                Timer::configureOutputChannel<In1>(Timer::OutputCompareMode::Pwm, 0);
+                Timer::configureOutputChannel<In2>(Timer::OutputCompareMode::Pwm, maxvalue / 2);
+            }
+            if (steper == 1)
+            {
+                steper = -1;
+            }
+            else
+            {
+                steper = 1;
+            }
+
+            modm::this_fiber::sleep_for(500us);
+        }
+    });
 int main()
 {
     Board::initialize();

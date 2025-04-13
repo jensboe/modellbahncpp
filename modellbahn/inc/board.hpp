@@ -131,6 +131,18 @@ namespace Board
 			using En = GpioOutputE14;
 			using In1 = GpioOutputE13;
 			using In2 = GpioOutputE9;
+			using Timer = Timer1;
+			inline void initialize()
+			{
+				// Driver
+				En::setOutput(modm::Gpio::Low);
+				In1::setOutput(modm::Gpio::Low);
+				In2::setOutput(modm::Gpio::Low);
+				Timer::connect<In1::Ch3, In2::Ch1>();
+				Timer::enable();
+				Timer::setMode(Timer::Mode::UpCounter);
+				Timer::setPeriod<Board::SystemClock>(80us);
+			}
 		};
 
 		inline void initialize()
@@ -140,11 +152,8 @@ namespace Board
 			Indicator::LedYellow::setOutput(modm::Gpio::Low);
 			Indicator::LedGreen::setOutput(modm::Gpio::Low);
 			LedGreen::setOutput(modm::Gpio::Low);
-			// Driver
-			L6226::En::setOutput(modm::Gpio::Low);
-			L6226::In1::setOutput(modm::Gpio::Low);
-			L6226::In2::setOutput(modm::Gpio::Low);
 
+			L6226::initialize();
 			// Adc
 			Adc::Channel sensorMapping[3] = {
 				Adc::getPinChannel<AdcCurrent>(),
