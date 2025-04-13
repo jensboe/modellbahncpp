@@ -25,13 +25,13 @@ int main()
 {
     Board::initialize();
 
-    Board::Adapter_A::LedRed::set(true);
+    Board::Adapter_A::Indicator::LedRed::set(true);
     modm::delay(500ms);
-    Board::Adapter_A::LedRed::set(false);
-    Board::Adapter_A::LedYellow::set(true);
+    Board::Adapter_A::Indicator::LedRed::set(false);
+    Board::Adapter_A::Indicator::LedYellow::set(true);
     modm::delay(200ms);
-    Board::Adapter_A::LedYellow::set(false);
-    Board::Adapter_A::LedGreen::set(true);
+    Board::Adapter_A::Indicator::LedYellow::set(false);
+    Board::Adapter_A::Indicator::LedGreen::set(true);
 
     modm::fiber::Scheduler::run();
     return 0;

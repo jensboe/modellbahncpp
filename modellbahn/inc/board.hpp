@@ -97,9 +97,9 @@ namespace Board
 	{
 		using Button = GpioInputC13;
 
-		using LedGreen = GpioOutputB0; // LED1 [Green]
-		using LedBlue = GpioOutputB7;  // LED2 [Blue]
-		using LedRed = GpioOutputB14;  // LED3 [Red]
+		using LedGreen = GpioOutputB0;
+		using LedBlue = GpioOutputB7;
+		using LedRed = GpioOutputB14;
 		using Leds = SoftwareGpioPort<LedRed, LedBlue, LedGreen>;
 		inline void initialize()
 		{
@@ -112,21 +112,38 @@ namespace Board
 
 	namespace Adapter_A
 	{
-		using LedRed = GpioOutputC9;
-		using LedYellow = GpioOutputG2;
-		using LedGreen = GpioOutputG3;
-		using SignalLeds = SoftwareGpioPort<LedRed, LedYellow, LedGreen>;
+		namespace Indicator
+		{
+			using LedRed = GpioOutputC9;
+			using LedYellow = GpioOutputG2;
+			using LedGreen = GpioOutputG3;
+			using Leds = SoftwareGpioPort<LedRed, LedYellow, LedGreen>;
+		}
+		using LedGreen = GpioOutputE0;
 
 		using AdcCurrent = GpioInputA3;
 		using AdcVoltage = GpioInputC0;
 		using Adc = Adc1;
 		using sensors = modm::AdcSampler<AdcInterrupt1, 3, 100>;
 
+		namespace L6226
+		{
+			using En = GpioOutputE14;
+			using In1 = GpioOutputE13;
+			using In2 = GpioOutputE9;
+		};
+
 		inline void initialize()
 		{
-			LedRed::setOutput(modm::Gpio::Low);
-			LedYellow::setOutput(modm::Gpio::Low);
+			// Leds
+			Indicator::LedRed::setOutput(modm::Gpio::Low);
+			Indicator::LedYellow::setOutput(modm::Gpio::Low);
+			Indicator::LedGreen::setOutput(modm::Gpio::Low);
 			LedGreen::setOutput(modm::Gpio::Low);
+			// Driver
+			L6226::En::setOutput(modm::Gpio::Low);
+			L6226::In1::setOutput(modm::Gpio::Low);
+			L6226::In2::setOutput(modm::Gpio::Low);
 
 			// Adc
 			Adc::Channel sensorMapping[3] = {

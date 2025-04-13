@@ -41,14 +41,14 @@ modm_extern_c void modm_abandon(const modm::AssertionInfo &info)
 	MODM_LOG_ERROR << IFSS(" failed!\nAbandoning...\n");
 #endif
 	Board::Nucleo::Leds::setOutput();
-	Board::Adapter_A::SignalLeds::setOutput();
+	Board::Adapter_A::Indicator::Leds::setOutput();
 	for (int times = 10; times >= 0; times--)
 	{
 		Board::Nucleo::LedRed::set(true);
-		Board::Adapter_A::LedRed::set(true);
+		Board::Adapter_A::Indicator::LedRed::set(true);
 		modm::delay_ms(20);
 		Board::Nucleo::LedRed::set(false);
-		Board::Adapter_A::LedRed::set(false);
+		Board::Adapter_A::Indicator::LedRed::set(false);
 		modm::delay_ms(180);
 	}
 	// Do not flush here otherwise you may deadlock due to waiting on the UART
