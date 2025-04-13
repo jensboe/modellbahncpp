@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <modm/processing.hpp>
+#include "board.hpp"
 
 struct ioposition
 {

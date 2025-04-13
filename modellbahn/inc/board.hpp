@@ -108,6 +108,7 @@ namespace Board
 		using LedGreen = GpioOutputG3;
 		using SignalLeds = SoftwareGpioPort<LedRed, LedYellow, LedGreen>;
 	};
+	
 	namespace ExpantionBoard
 	{
 		using DmaRx = Dma1::Channel0;

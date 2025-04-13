@@ -1,32 +1,7 @@
 #pragma once
 #include <cstddef>
 #include "expansion/controller.hpp"
-enum class trackid
-{
-    INVALID = -1,
-    A_d,
-    A_c,
-    A_1a,
-    A_1b,
-    A_a,
-    A_2a,
-    A_2b,
-    A_b,
-    A_3a,
-    A_3b,
-    B_1a,
-    C_a,
-    C_1a,
-    C_1b,
-    C_2a,
-    C_2b,
-    C_b,
-    C_c,
-    C_3a,
-    C_3b,
-    C_3c,
-    D_1a,
-};
+#include "trackid.hpp"
 
 enum class power
 {
@@ -46,7 +21,6 @@ struct track
 {
     /// @brief The unique identifier of the track.
     const trackid id;
-
 
     /// @brief The power position of the track.
     const ioposition power_pos;
