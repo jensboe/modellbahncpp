@@ -11,9 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: jensboe/arm-cortex-build
-
+      container: 
+        image: ghcr.io/jensboe/arm-cortex-build
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
