@@ -23,7 +23,8 @@ jobs:
         uses: jwlawson/actions-setup-cmake@v1
         with:
           cmake-version: '4.0.0'
-
+      - name: Install Python dependencies
+        run: pip install pyelftools
       - name: Configure
         run: cmake -S . -B build
 
