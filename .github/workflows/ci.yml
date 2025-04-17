@@ -17,6 +17,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install Python dependencies
+        run: pip install pyelftools
       
       - name: Configure Debug
         run: cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug
