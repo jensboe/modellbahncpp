@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-debug:
     runs-on: ubuntu-latest
     container: 
       image: ghcr.io/jensboe/arm-cortex-build
@@ -25,6 +25,16 @@ jobs:
       - name: Build Debug
         run: cmake --build build/debug
 
+  build-release:
+    runs-on: ubuntu-latest
+    container: 
+      image: ghcr.io/jensboe/arm-cortex-build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Python dependencies
+        run: pip install pyelftools
       - name: Configure  Release
         run: cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Debug
 
