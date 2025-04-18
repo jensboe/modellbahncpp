@@ -317,12 +317,14 @@ function(modm_targets_create project_name)
     COMMAND cmake -E env PYTHONPATH=${PROJECT_SOURCE_DIR}/modm ${Python3_EXECUTABLE} -m modm_tools.size ${project_name}.elf \"[{'name': 'flash', 'access': 'rx', 'start': 134217728, 'size': 524288}, {'name': 'sram1', 'access': 'rwx', 'start': 536870912, 'size': 131072}]\")
   add_custom_target(size DEPENDS ${project_name}.elf)
   add_custom_command(TARGET size
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.size ${PROJECT_BINARY_DIR}/${project_name}.elf \"[{'name': 'flash', 'access': 'rx', 'start': 134217728, 'size': 524288}, {'name': 'sram1', 'access': 'rwx', 'start': 536870912, 'size': 131072}]\"
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
   add_custom_target(program DEPENDS ${project_name}.elf)
   add_custom_command(TARGET program
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.openocd -f modm/openocd.cfg
         ${PROJECT_BINARY_DIR}/${project_name}.elf
@@ -330,6 +332,7 @@ function(modm_targets_create project_name)
 
   add_custom_target(program-bmp DEPENDS ${project_name}.elf)
   add_custom_command(TARGET program-bmp
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.bmp -p ${MODM_BMP_PORT}
         ${PROJECT_BINARY_DIR}/${project_name}.elf
@@ -337,6 +340,7 @@ function(modm_targets_create project_name)
 
   add_custom_target(program-jlink DEPENDS ${project_name}.elf)
   add_custom_command(TARGET program-jlink
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.jlink -device stm32f446ze
         ${PROJECT_BINARY_DIR}/${project_name}.elf
@@ -344,6 +348,7 @@ function(modm_targets_create project_name)
 
   add_custom_target(debug DEPENDS ${project_name}.elf)
   add_custom_command(TARGET debug
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.gdb -x modm/gdbinit -x modm/openocd_gdbinit
         --elf ${PROJECT_BINARY_DIR}/${project_name}.elf --ui=${MODM_DBG_UI}
@@ -352,6 +357,7 @@ function(modm_targets_create project_name)
 
   add_custom_target(debug-bmp DEPENDS ${project_name}.elf)
   add_custom_command(TARGET debug-bmp
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.gdb -x modm/gdbinit -x modm/openocd_bmp
         --elf ${PROJECT_BINARY_DIR}/${project_name}.elf --ui=${MODM_DBG_UI}
@@ -360,6 +366,7 @@ function(modm_targets_create project_name)
 
   add_custom_target(debug-jlink DEPENDS ${project_name}.elf)
   add_custom_command(TARGET debug-jlink
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.gdb -x modm/gdbinit -x modm/openocd_jlink
         --elf ${PROJECT_BINARY_DIR}/${project_name}.elf --ui=${MODM_DBG_UI}
@@ -368,6 +375,7 @@ function(modm_targets_create project_name)
 
   add_custom_target(debug-coredump DEPENDS ${project_name}.elf)
   add_custom_command(TARGET debug-coredump
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env	PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.gdb -x modm/gdbinit
         --elf ${PROJECT_BINARY_DIR}/${project_name}.elf --ui=${MODM_DBG_UI}
@@ -376,6 +384,7 @@ function(modm_targets_create project_name)
 
   add_custom_target(coredump)
   add_custom_command(TARGET coredump
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.gdb -x modm/gdbinit
         -ex "modm_coredump" -ex "modm_build_id" -ex "quit"
@@ -384,6 +393,7 @@ function(modm_targets_create project_name)
 
   add_custom_target(coredump-bmp)
   add_custom_command(TARGET coredump-bmp
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.gdb -x modm/gdbinit
         -ex "modm_coredump" -ex "modm_build_id" -ex "quit"
@@ -392,6 +402,7 @@ function(modm_targets_create project_name)
 
   add_custom_target(coredump-jlink)
   add_custom_command(TARGET coredump-jlink
+  POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.gdb -x modm/gdbinit
         -ex "modm_coredump" -ex "modm_build_id" -ex "quit"
@@ -400,42 +411,49 @@ function(modm_targets_create project_name)
 
   add_custom_target(reset)
   add_custom_command(TARGET reset
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.openocd -f modm/openocd.cfg --reset
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
   add_custom_target(reset-bmp)
   add_custom_command(TARGET reset-bmp
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.bmp -p ${MODM_BMP_PORT} --reset
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
   add_custom_target(reset-jlink)
   add_custom_command(TARGET reset-jlink
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.jlink -device stm32f446ze --reset
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
   add_custom_target(log-itm)
   add_custom_command(TARGET log-itm
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.itm openocd -f modm/openocd.cfg --fcpu ${MODM_ITM_FCPU}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
   add_custom_target(log-itm-jlink)
   add_custom_command(TARGET log-itm-jlink
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.itm jlink -device stm32f446ze
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
   add_custom_target(log-rtt)
   add_custom_command(TARGET log-rtt
+    POST_BUILD  
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.rtt --channel ${MODM_RTT_CHANNEL} openocd -f modm/openocd.cfg
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
   add_custom_target(log-rtt-jlink)
   add_custom_command(TARGET log-rtt-jlink
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.rtt --channel ${MODM_RTT_CHANNEL} jlink -device stm32f446ze
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
