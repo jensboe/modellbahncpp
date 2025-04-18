@@ -108,8 +108,6 @@ function(modm_target_config_create target target_arch target_options target_warn
 
   set(CCFLAGS
     -fdata-sections
-    -ffile-prefix-map=${MODM_GCC_PATH}=.
-    -ffile-prefix-map=${CMAKE_SOURCE_DIR}=.
     -ffunction-sections
     -finline-limit=10000
     -fno-builtin-printf
@@ -402,7 +400,7 @@ function(modm_targets_create project_name)
 
   add_custom_target(coredump-jlink)
   add_custom_command(TARGET coredump-jlink
-  POST_BUILD
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.gdb -x modm/gdbinit
         -ex "modm_coredump" -ex "modm_build_id" -ex "quit"
@@ -446,7 +444,7 @@ function(modm_targets_create project_name)
 
   add_custom_target(log-rtt)
   add_custom_command(TARGET log-rtt
-    POST_BUILD  
+    POST_BUILD
     USES_TERMINAL
     COMMAND cmake -E env PYTHONPATH=modm ${Python3_EXECUTABLE} -m modm_tools.rtt --channel ${MODM_RTT_CHANNEL} openocd -f modm/openocd.cfg
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
