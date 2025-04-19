@@ -1,5 +1,7 @@
 build
 *.log
 
+.vscode/settings.json
+
 # Ignore python cache files
 __pycache__/
